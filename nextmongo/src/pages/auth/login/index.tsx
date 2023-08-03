@@ -19,10 +19,37 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
+  const contentType = 'application/json'
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+
+    try {
+     const res = await fetch('/api/login', {
+       method: 'POST',
+       headers: {
+         Accept: contentType,
+         'Content-Type': contentType,
+       },
+       body: JSON.stringify({ email, password }),
+     }).then((response) => response.json())
+     .then((data: LoginResponseBody) => {
+       console.log('Response Data:', data);
+       // Handle the response data here
+       const token =data.token;
+          dispatch(login(token))
+      router.push("/dashboard");
+     })
+     .catch((error) => {
+       console.error('Error:', error);
+       // Handle the error here
+     });
+
+
+   } catch (error) {
+console.log(error)
+   }
     // Authenticate the user (replace this with your authentication logic)
     // const response = await fetch("/api/login", {
     //   method: "POST",
