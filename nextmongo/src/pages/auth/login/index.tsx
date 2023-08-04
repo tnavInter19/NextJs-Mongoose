@@ -6,50 +6,68 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useEffect } from "react";
 import Link from "next/link";
+import { LoginRequestBody, LoginResponseBody } from "@/pages/api/login";
+import { postRequest } from "@/utils/api";
 
 function LoginPage() {
- const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
- const router = useRouter();
- useEffect(() => {
-   if (isLoggedIn) {
-     // Redirect to the login page or an "unauthorized" page
-     router.push("/dashboard");
-   }
- }, []);
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+  const router = useRouter();
+  useEffect(() => {
+    if (isLoggedIn) {
+      // Redirect to the login page or an "unauthorized" page
+      router.push("/dashboard");
+    }
+  }, []);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
   const dispatch = useDispatch();
-  const contentType = 'application/json'
+  const contentType = "application/json";
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    var req: LoginRequestBody = {
+      email: email,
+      password: password,
+    };
+    console.log(req)
+    postRequest("/api/login", req)
+      .then((res: LoginResponseBody) => {
+        console.log("Response Data:", res);
 
-    try {
-     const res = await fetch('/api/login', {
-       method: 'POST',
-       headers: {
-         Accept: contentType,
-         'Content-Type': contentType,
-       },
-       body: JSON.stringify({ email, password }),
-     }).then((response) => response.json())
-     .then((data: LoginResponseBody) => {
-       console.log('Response Data:', data);
-       // Handle the response data here
-       const token =data.token;
-          dispatch(login(token))
-      router.push("/dashboard");
-     })
-     .catch((error) => {
-       console.error('Error:', error);
-       // Handle the error here
-     });
+        const token = res.token;
+        dispatch(login(token));
+        router.push("/dashboard");
+      })
+      .catch((error) => {
+       console.log(error.message)
+        setMessage(error.message);
+      });
+    //     try {
+    //     await fetch('/api/login', {
+    //        method: 'POST',
+    //        headers: {
+    //          Accept: contentType,
+    //          'Content-Type': contentType,
+    //        },
+    //        body: JSON.stringify({ email, password }),
+    //      }).then((response) => response.json())
+    //      .then((data: c) => {
+    //        console.log('Response Data:', data);
+    //        // Handle the response data here
+    //        const token =data.token;
+    //           dispatch(login(token))
+    //       router.push("/dashboard");
+    //      })
+    //      .catch((error) => {
+    //        console.error('Error:', error);
+    //        // Handle the error here
+    //      });
 
-
-   } catch (error) {
-console.log(error)
-   }
+    //    } catch (error) {
+    // console.log(error)
+    //    }
     // Authenticate the user (replace this with your authentication logic)
     // const response = await fetch("/api/login", {
     //   method: "POST",
@@ -88,10 +106,8 @@ console.log(error)
     // .catch((error) => {
     //   console.log(error.response.data.msg);
     // });
-
   };
   return (
-   
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="p-6 bg-white rounded-md shadow-lg w-96">
         <h1 className="text-3xl font-semibold mb-4">Login</h1>
@@ -133,8 +149,14 @@ console.log(error)
             Login
           </button>
           <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                      Don’t have an account yet? <Link href="/auth/register" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Register</Link>
-                  </p>
+            Don’t have an account yet?{" "}
+            <Link
+              href="/auth/register"
+              className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+            >
+              Register
+            </Link>
+          </p>
         </form>
       </div>
     </div>

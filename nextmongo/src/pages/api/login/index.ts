@@ -3,14 +3,15 @@ import dbConnect from "../../../lib/dbConnect";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../../../models/User";
-interface LoginRequestBody {
- email: string;
- password: string;
+
+export interface LoginRequestBody {
+  email: string;
+  password: string;
 }
 
-interface LoginResponseBody {
- user: { name: string };
- token: string;
+export interface LoginResponseBody {
+  user: { name: string };
+  token: string;
 }
 
 export default async function handler(
@@ -23,14 +24,14 @@ export default async function handler(
 
   switch (method) {
     case "POST":
-      const { email, password } = req.body as LoginRequestBody;;
+      const { email, password } = req.body as LoginRequestBody;
 
       // In a real application, you would fetch the user from the database based on the provided email.
       // For this example, we will use a dummy user object.
       const user = await User.findOne({ email });
 
       if (!user) {
-        return res.status(404).json({ message: "User not found" });
+        return res.status(404).json({ error: "User not found" });
       }
 
       try {
@@ -38,7 +39,7 @@ export default async function handler(
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
-          res.status(401).json({ message: "Invalid email or password" });
+          res.status(401).json({ error: "Invalid email or password" });
         }
 
         // Create a JWT token for the user.
@@ -48,10 +49,12 @@ export default async function handler(
           { expiresIn: "1d" }
         );
 
-        res.status(200).json({ user: { name: user.name }, token }as LoginResponseBody);
+        res
+          .status(200)
+          .json({ user: { name: user.name }, token } as LoginResponseBody);
       } catch (error) {
         console.error("Login error:", error);
-        res.status(500).json({ message: "Internal server error" });
+        res.status(500).json({ error: "Internal server error" });
       }
       break;
     default:
@@ -59,4 +62,3 @@ export default async function handler(
       break;
   }
 }
-

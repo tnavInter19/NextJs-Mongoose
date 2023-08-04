@@ -4,6 +4,8 @@ import { useRouter } from "next/router";
 import { RootState } from "@/redux/store";
 import { useEffect } from "react";
 import Link from "next/link";
+import { RegisterRequestBody } from "@/pages/api/register";
+import { postRequest } from "@/utils/api";
 
 function Registartion() {
  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
@@ -14,6 +16,7 @@ function Registartion() {
      router.push("/dashboard");
    }
  }, []);
+ const contentType = 'application/json'
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -129,30 +132,21 @@ function Registartion() {
       return;
     }
 
-    // If form is valid, perform your registration logic here
-    // Your API call for registration would go here
-    // var data: RegisterUserRequest = {
-    //   name: username,
-    //   email: email,
-    //   password: password,
-    // };
-    // const token: string = "djsnjifnjn";
-    // const axiosInstance: AxiosInstance = axios.create({
-    //   headers: {
-    //     Authorization: `Bearer ${token}`,
-    //     // Add other default headers if needed
-    //     // "Content-Type": "application/json",
-    //   },
-    // });
-    // new AuthApi(undefined, undefined, axiosInstance)
-    //   .registerUser(data)
-    //   .then((data) => {
-    //     console.log(data);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error.response.data.msg);
-    //     setMessage(error.response.data.msg);
-    //   });
+
+
+      var data: RegisterRequestBody = {
+      username: username,
+      email: email,
+      password: password,
+    };
+    postRequest('/api/register', data)
+      .then(() => {
+        console.log('User registered successfully!');
+      })
+      .catch((error) => {
+        setMessage(error.message);
+      });
+      
   };
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
