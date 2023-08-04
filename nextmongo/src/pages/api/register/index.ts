@@ -4,7 +4,7 @@ import user from "../../../models/User";
 
 
 export interface RegisterRequestBody {
- username:string;
+ name:string;
  email: string;
  password: string;
 }
@@ -20,11 +20,11 @@ export default async function handler(
   switch (method) {
     case "POST":
      try {
-      const { username, email, password } = req.body as RegisterRequestBody;
+      const { name, email, password } = req.body as RegisterRequestBody;
   
       // Check if the username or email already exists
       const existingUser = await user.findOne({
-        $or: [{ username }, { email }],
+        $or: [{ name }, { email }],
       });
   
       if (existingUser) {
@@ -32,7 +32,7 @@ export default async function handler(
       }
   
       // Create a new user
-      const newUser = new user({ username, email, password });
+      const newUser = new user({ name, email, password });
       await newUser.save();
   
       res.status(201).json({ message: 'User registered successfully' });

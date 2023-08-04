@@ -1,5 +1,4 @@
 
-
 const handleApiResponse = async (response: Response) => {
   if (!response.ok) {
     const data = await response.json();
@@ -8,19 +7,15 @@ const handleApiResponse = async (response: Response) => {
   return response.json();
 };
 
-export const postRequest = async (url: string, data: any) => {
+export const postRequest = async (url: string, data: any, isLoggedIn?:boolean, authToken?:string) => {
 
- const isLoggedIn = useIsLoggedIn();
-  const token = useAuthToken();
+
   const headers: any = {
     'Content-Type': 'application/json',
   };
-
-  // Add authentication token to the request headers if the user is logged in
-  // if (isLoggedIn) {
-  //   // Replace 'your_auth_token' with the actual authentication token, e.g., from cookies or local storage
-  //   headers.Authorization = token;
-  // }
+  if (isLoggedIn) {
+   headers.Authorization = authToken;
+ }
 
   const response = await fetch(url, {
     method: 'POST',

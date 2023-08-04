@@ -8,15 +8,16 @@ import { RegisterRequestBody } from "@/pages/api/register";
 import { postRequest } from "@/utils/api";
 
 function Registartion() {
- const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
- const router = useRouter();
- useEffect(() => {
-   if (isLoggedIn) {
-     // Redirect to the login page or an "unauthorized" page
-     router.push("/dashboard");
-   }
- }, []);
- const contentType = 'application/json'
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+  const authToken = useSelector((state: RootState) => state.auth.token);
+  const router = useRouter();
+  useEffect(() => {
+    if (isLoggedIn) {
+      // Redirect to the login page or an "unauthorized" page
+      router.push("/dashboard");
+    }
+  }, []);
+
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -132,21 +133,18 @@ function Registartion() {
       return;
     }
 
-
-
-      var data: RegisterRequestBody = {
-      username: username,
+    var data: RegisterRequestBody = {
+      name: username,
       email: email,
       password: password,
     };
-    postRequest('/api/register', data)
+    postRequest("/api/register", data, isLoggedIn, authToken)
       .then(() => {
-        console.log('User registered successfully!');
+        console.log("User registered successfully!");
       })
       .catch((error) => {
         setMessage(error.message);
       });
-      
   };
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -227,8 +225,14 @@ function Registartion() {
               Register
             </button>
             <p className="text-sm font-light text-gray-500 dark:text-gray-400 mt-3">
-                      Already have an account <Link href="/auth/login" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Login</Link>
-                  </p>
+              Already have an account{" "}
+              <Link
+                href="/auth/login"
+                className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+              >
+                Login
+              </Link>
+            </p>
           </div>
 
           {message && <p className="text-center mt-4">{message}</p>}

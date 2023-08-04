@@ -11,6 +11,7 @@ import { postRequest } from "@/utils/api";
 
 function LoginPage() {
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+  const authToken = useSelector((state : RootState) => state.auth.token);
   const router = useRouter();
   useEffect(() => {
     if (isLoggedIn) {
@@ -22,7 +23,6 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const dispatch = useDispatch();
-  const contentType = "application/json";
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,8 +31,8 @@ function LoginPage() {
       email: email,
       password: password,
     };
-    console.log(req)
-    postRequest("/api/login", req)
+
+    postRequest("/api/login", req, isLoggedIn, authToken)
       .then((res: LoginResponseBody) => {
         console.log("Response Data:", res);
 
@@ -44,68 +44,6 @@ function LoginPage() {
        console.log(error.message)
         setMessage(error.message);
       });
-    //     try {
-    //     await fetch('/api/login', {
-    //        method: 'POST',
-    //        headers: {
-    //          Accept: contentType,
-    //          'Content-Type': contentType,
-    //        },
-    //        body: JSON.stringify({ email, password }),
-    //      }).then((response) => response.json())
-    //      .then((data: c) => {
-    //        console.log('Response Data:', data);
-    //        // Handle the response data here
-    //        const token =data.token;
-    //           dispatch(login(token))
-    //       router.push("/dashboard");
-    //      })
-    //      .catch((error) => {
-    //        console.error('Error:', error);
-    //        // Handle the error here
-    //      });
-
-    //    } catch (error) {
-    // console.log(error)
-    //    }
-    // Authenticate the user (replace this with your authentication logic)
-    // const response = await fetch("/api/login", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({ email, password }),
-    // });
-
-    // if (response.ok) {
-    //   const { token } = await response.json();
-    //   localStorage.setItem("token", token);
-    //   router.push("/dashboard");
-    // } else {
-    //   alert("Invalid email or password");
-    // }
-
-    // const token: string = "djsnjifnjn";
-    // const axiosInstance: AxiosInstance = axios.create({
-    //   headers: {
-    //     Authorization: `Bearer ${token}`,
-    //     // Add other default headers if needed
-    //     // "Content-Type": "application/json",
-    //   },
-    // });
-
-    // new AuthApi(undefined, undefined, axiosInstance)
-    // .loginUser({ email, password })
-    // .then((data) => {
-    //  // localStorage.setItem("token", data);
-    //   var token:string =data.data['token']
-    //  dispatch(login(token))
-    //   router.push("/dashboard");
-    //   console.log(data.data)
-    // })
-    // .catch((error) => {
-    //   console.log(error.response.data.msg);
-    // });
   };
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
