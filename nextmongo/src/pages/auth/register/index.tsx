@@ -138,7 +138,7 @@ function Registartion() {
       email: email,
       password: password,
     };
-    postRequest("/api/register", data, isLoggedIn, authToken)
+    postRequest("/api/register", data, isLoggedIn, authToken!)
       .then(() => {
         console.log("User registered successfully!");
       })

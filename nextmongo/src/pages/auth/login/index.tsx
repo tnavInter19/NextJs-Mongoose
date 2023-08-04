@@ -32,7 +32,7 @@ function LoginPage() {
       password: password,
     };
 
-    postRequest("/api/login", req, isLoggedIn, authToken)
+    postRequest("/api/login", req, isLoggedIn, authToken!)
       .then((res: LoginResponseBody) => {
         console.log("Response Data:", res);
 

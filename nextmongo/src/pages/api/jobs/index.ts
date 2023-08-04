@@ -6,18 +6,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
-   // Check if the request includes the authorization token
-   if (!req.headers.authorization) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
 
-  // Replace 'your_auth_token' with the actual authentication token sent from the client
-  const authToken = 'your_auth_token';
-  // You should handle token verification, e.g., verify the token using JWT or other authentication mechanisms
-
-  if (authToken !== 'your_auth_token') {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
   const { method } = req;
 
   await dbConnect();
@@ -33,12 +22,17 @@ export default async function handler(
       break;
     case "POST":
       try {
+
+       const { company, position,status,createdBy } = req.body
+       if(!createdBy){
+        return res.status(404).json({ error: "Please provide user" });
+       }
         const job = await Job.create(
           req.body
         ); /* create a new model in the database */
-        res.status(201).json({ success: true, data: job });
+        res.status(201).json({ data: job });
       } catch (error) {
-        res.status(400).json({ success: false });
+        res.status(400).json({ message: `${error}` });
       }
       break;
     default:
