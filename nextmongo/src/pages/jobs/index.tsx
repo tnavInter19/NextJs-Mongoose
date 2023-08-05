@@ -5,6 +5,7 @@ import { deleteRequest, postRequest, putRequest } from "@/utils/api";
 import Loading from "@/components/loading";
 import dbConnect from "@/lib/dbConnect";
 import Job from "@/models/Job";
+import withAuth from './../../utils/withAuth';
 
 export interface Job {
  _id?: string;
@@ -58,10 +59,10 @@ const JobsPage: React.FC<Props> = ({ initialJobs }) => {
   return (
     <div className="p-4">
       <h1 className="text-3xl font-bold mb-4">Job Listings</h1>
-      {error ? (
-        <p>{error}</p>
-      ) : jobs.length === 0 ? (
-        <Loading />
+      {jobs.length === 0 ? (
+       <div>
+        <p>Job Not Found</p>
+        </div>
       ) : (
         <ul className="space-y-4">
           {jobs.map((job) => (
@@ -123,4 +124,6 @@ try{
   }
 };
 
-export default JobsPage;
+const JobsPageWithAuth = withAuth(JobsPage);
+
+export default JobsPageWithAuth;

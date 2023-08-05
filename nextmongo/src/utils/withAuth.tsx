@@ -1,9 +1,10 @@
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import Loading from "@/components/loading";
 
-const withAuth = (WrappedComponent: React.FC) => {
-  const ProtectedPage: React.FC = () => {
+const withAuth = (WrappedComponent: React.FC<Props>) => {
+  const ProtectedPage: React.FC<Props> = (props) => {
     const { isAuthenticated } = useAuth();
     const router = useRouter();
 
@@ -14,10 +15,9 @@ const withAuth = (WrappedComponent: React.FC) => {
     }, [isAuthenticated]);
 
     if (!isAuthenticated) {
-      return <p>Loading...</p>;
+      return <Loading />;
     }
-
-    return <WrappedComponent />;
+    return <WrappedComponent {...props} />;
   };
 
   return ProtectedPage;
