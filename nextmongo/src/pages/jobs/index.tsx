@@ -1,34 +1,29 @@
-import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { getRequest, postRequest, deleteRequest, putRequest } from "@/utils/api"; // Add necessary request functions for API operations
+import { deleteRequest, postRequest, putRequest } from "@/utils/api";
 import Loading from "@/components/loading";
+import dbConnect from "@/lib/dbConnect";
+import Job from "@/models/Job";
 
 export interface Job {
-  _id?: string;
-  company: string;
-  position: string;
-  status: 'interview' | 'declined' | 'pending';
+ _id?: string;
+ company: string;
+ position: string;
+ status: 'interview' | 'declined' | 'pending';
 }
 
-const JobsPage = () => {
-  const [jobs, setJobs] = useState<Job[]>([]);
+interface Props {
+  initialJobs: Job[];
+}
+
+const JobsPage: React.FC<Props> = ({ initialJobs }) => {
+ console.log(initialJobs)
+  const [jobs, setJobs] = useState<Job[]>(initialJobs);
   const [error, setError] = useState<string>('');
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   const authToken = useSelector((state: RootState) => state.auth.token);
-
-  useEffect(() => {
-    fetchJobs();
-  }, []); // Run fetchJobs only once when the component mounts
-
-  const fetchJobs = async () => {
-    const response = await getRequest("/api/jobs", isLoggedIn, authToken!);
-    if (response.error) {
-      setError('Error fetching jobs: ' + response.error);
-    } else {
-      setJobs(response.data);
-    }
-  };
+  const dispatch = useDispatch();
 
   const deleteJob = async (jobId: string) => {
     const response = await deleteRequest(`/api/jobs/${jobId}`, isLoggedIn, authToken!);
@@ -41,13 +36,13 @@ const JobsPage = () => {
   };
 
   const createJob = async (newJob: Job) => {
-  postRequest("/api/jobs", newJob, isLoggedIn, authToken!).then((res) => {
-     console.log("Response Data:", res);
-   })
-   .catch((error) => {
-    console.log(error.message)
-
-   });
+    postRequest("/api/jobs", newJob, isLoggedIn, authToken!)
+      .then((res) => {
+        console.log("Response Data:", res);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
   };
 
   const editJob = async (editedJob: Job) => {
@@ -83,16 +78,18 @@ const JobsPage = () => {
       <div>
         {/* Form to create a new job */}
         <h2>Create New Job</h2>
-        <form onSubmit={(e) => {
-          e.preventDefault();
-          const formData = new FormData(e.target as HTMLFormElement);
-          const newJob: Job = {
-            company: formData.get("company") as string,
-            position: formData.get("position") as string,
-            status: formData.get("status") as 'interview' | 'declined' | 'pending',
-          };
-          createJob(newJob);
-        }}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target as HTMLFormElement);
+            const newJob: Job = {
+              company: formData.get("company") as string,
+              position: formData.get("position") as string,
+              status: formData.get("status") as 'interview' | 'declined' | 'pending',
+            };
+            createJob(newJob);
+          }}
+        >
           <input type="text" name="company" placeholder="Company" required />
           <input type="text" name="position" placeholder="Position" required />
           <select name="status" required>
@@ -105,6 +102,25 @@ const JobsPage = () => {
       </div>
     </div>
   );
+};
+
+export async function getServerSideProps({res}) {
+// const {req,res}=context
+console.log(res.headers)
+try{
+ await dbConnect()
+   /* find all the data in our database */
+   const result = await Job.find({})
+
+    return {
+      props: { initialJobs:JSON.parse(JSON.stringify(result)) },
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      props: { initialJobs: [] },
+    };
+  }
 };
 
 export default JobsPage;
