@@ -12,17 +12,21 @@
     "@headlessui/react": "^1.7.16",
     "@heroicons/react": "^2.0.18",
     "@reduxjs/toolkit": "^1.9.5",
+    "@sendgrid/mail": "^7.7.0",
     "@types/node": "20.4.6",
     "@types/react": "18.2.18",
     "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.14",
     "bcryptjs": "^2.4.3",
+    "crypto": "^1.0.1",
     "eslint": "8.46.0",
     "eslint-config-next": "13.4.12",
     "jsonwebtoken": "^9.0.1",
     "lucide-react": "^0.263.1",
     "mongoose": "^7.4.1",
     "next": "13.4.12",
+    "nodemailer": "^6.9.4",
+    "nodemailer-sendgrid-transport": "^0.2.0",
     "postcss": "8.4.27",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -35,6 +39,7 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
-    "@types/jsonwebtoken": "^9.0.2"
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/nodemailer": "^6.4.9"
   }
 }

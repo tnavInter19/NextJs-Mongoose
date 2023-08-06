@@ -71,7 +71,7 @@ const JobsPage: React.FC<Props> = ({ initialJobs }) => {
               <p>{job.position}</p>
               <p>Status: {job.status}</p>
               <button onClick={() => editJob(job)}>Edit</button>
-              <button onClick={() => deleteJob(job._id)}>Delete</button>
+              <button onClick={() => deleteJob(job._id!)}>Delete</button>
             </li>
           ))}
         </ul>
@@ -105,9 +105,8 @@ const JobsPage: React.FC<Props> = ({ initialJobs }) => {
   );
 };
 
-export async function getServerSideProps({res}) {
-// const {req,res}=context
-console.log(res.headers)
+export async function getServerSideProps() {
+
 try{
  await dbConnect()
    /* find all the data in our database */

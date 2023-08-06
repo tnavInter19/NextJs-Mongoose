@@ -28,6 +28,18 @@ const userSchema= new mongoose.Schema({
     enum: ["admin", "user", "superadmin"],
     default: "user",
   },
+  otp: {
+   type: String,
+   required: [true, 'Please provide OTP'],
+ },
+ otpExpiration: {
+   type: Date,
+   required: [true, 'Please provide OTP expiration'],
+ },
+ isOTPVerified: {
+   type: Boolean,
+   default: false,
+ },
 });
 
 

@@ -1,17 +1,16 @@
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { deleteRequest, postRequest, putRequest } from "@/utils/api";
-import Loading from "@/components/loading";
 import dbConnect from "@/lib/dbConnect";
 import Job from "@/models/Job";
 
 export interface Job {
- _id?: string;
- company: string;
- position: string;
- status: 'interview' | 'declined' | 'pending';
+  _id?: string;
+  company: string;
+  position: string;
+  status: "interview" | "declined" | "pending";
 }
 
 interface Props {
@@ -19,18 +18,22 @@ interface Props {
 }
 
 const JobsPage: React.FC<Props> = ({ initialJobs }) => {
- console.log(initialJobs)
- const router = useRouter()
+  console.log(initialJobs);
+  const router = useRouter();
   const [jobs, setJobs] = useState<Job[]>(initialJobs);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   const authToken = useSelector((state: RootState) => state.auth.token);
   const dispatch = useDispatch();
 
   const deleteJob = async (jobId: string) => {
-    const response = await deleteRequest(`/api/jobs/${jobId}`, isLoggedIn, authToken!);
+    const response = await deleteRequest(
+      `/api/jobs/${jobId}`,
+      isLoggedIn,
+      authToken!
+    );
     if (response.error) {
-      setError('Error deleting job: ' + response.error);
+      setError("Error deleting job: " + response.error);
     } else {
       // Remove the deleted job from the state
       setJobs(jobs.filter((job) => job._id !== jobId));
@@ -48,12 +51,19 @@ const JobsPage: React.FC<Props> = ({ initialJobs }) => {
   };
 
   const editJob = async (editedJob: Job) => {
-    const response = await putRequest(`/api/jobs/${editedJob._id}`, editedJob, isLoggedIn, authToken!);
+    const response = await putRequest(
+      `/api/jobs/${editedJob._id}`,
+      editedJob,
+      isLoggedIn,
+      authToken!
+    );
     if (response.error) {
-      setError('Error editing job: ' + response.error);
+      setError("Error editing job: " + response.error);
     } else {
       // Update the job in the state
-      setJobs(jobs.map((job) => (job._id === editedJob._id ? response.data : job)));
+      setJobs(
+        jobs.map((job) => (job._id === editedJob._id ? response.data : job))
+      );
     }
   };
 
@@ -61,19 +71,19 @@ const JobsPage: React.FC<Props> = ({ initialJobs }) => {
     <div className="p-4">
       <h1 className="text-3xl font-bold mb-4">Job Listings</h1>
       {jobs.length === 0 ? (
-       <div>
-        <p>Job Not Found</p>
+        <div>
+          <p>Job Not Found</p>
         </div>
       ) : (
         <ul className="space-y-4">
-         <p>Post: {router.query.jobid}</p>
+          <p>Post: {router.query.jobid}</p>
           {jobs.map((job) => (
             <li key={job._id} className="p-4 bg-white shadow-md rounded-lg">
               <h3 className="text-xl font-semibold mb-2">{job.company}</h3>
               <p>{job.position}</p>
               <p>Status: {job.status}</p>
               <button onClick={() => editJob(job)}>Edit</button>
-              <button onClick={() => deleteJob(job._id)}>Delete</button>
+              <button onClick={() => deleteJob(job._id!)}>Delete</button>
             </li>
           ))}
         </ul>
@@ -88,7 +98,10 @@ const JobsPage: React.FC<Props> = ({ initialJobs }) => {
             const newJob: Job = {
               company: formData.get("company") as string,
               position: formData.get("position") as string,
-              status: formData.get("status") as 'interview' | 'declined' | 'pending',
+              status: formData.get("status") as
+                | "interview"
+                | "declined"
+                | "pending",
             };
             createJob(newJob);
           }}
@@ -107,16 +120,19 @@ const JobsPage: React.FC<Props> = ({ initialJobs }) => {
   );
 };
 
-export async function getServerSideProps({params}) {
-// const {req,res}=context
-console.log(params.jobid)
-try{
- await dbConnect()
-   /* find all the data in our database */
-   const result = await Job.find({createdBy:params.jobid})
+export async function getServerSideProps({
+  params,
+}: {
+  params: { jobid: string }; // Define the type for params
+}) {
+  console.log(params.jobid);
+  try {
+    await dbConnect();
+    /* find all the data in our database */
+    const result = await Job.find({ createdBy: params.jobid });
 
     return {
-      props: { initialJobs:JSON.parse(JSON.stringify(result)) },
+      props: { initialJobs: JSON.parse(JSON.stringify(result)) },
     };
   } catch (error) {
     console.error(error);
@@ -124,6 +140,6 @@ try{
       props: { initialJobs: [] },
     };
   }
-};
+}
 
 export default JobsPage;
