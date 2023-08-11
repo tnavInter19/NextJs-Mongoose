@@ -36,9 +36,9 @@ function LoginPage() {
       .then((res: LoginResponseBody) => {
         console.log("Response Data:", res);
 
-        const token = res.token;
-        dispatch(login(token));
-        router.push("/dashboard");
+        const { token, userId } = res;// Assuming the response includes userId
+    dispatch(login(token, userId)); // Dispatch both token and userId
+    router.push("/dashboard");
       })
       .catch((error) => {
        console.log(error.message)

@@ -1,8 +1,16 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
+export interface IUser extends Document {
+  name: string;
+  email: string;
+  password: string;
+  role: "admin" | "user" | "superadmin";
+  otp: string;
+  otpExpiration: Date;
+  isOTPVerified: boolean;
+}
 
-
-const userSchema= new mongoose.Schema({
+const userSchema: Schema<IUser> = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Please provide name"],
@@ -29,18 +37,19 @@ const userSchema= new mongoose.Schema({
     default: "user",
   },
   otp: {
-   type: String,
-   required: [true, 'Please provide OTP'],
- },
- otpExpiration: {
-   type: Date,
-   required: [true, 'Please provide OTP expiration'],
- },
- isOTPVerified: {
-   type: Boolean,
-   default: false,
- },
+    type: String,
+    required: [true, 'Please provide OTP'],
+  },
+  otpExpiration: {
+    type: Date,
+    required: [true, 'Please provide OTP expiration'],
+  },
+  isOTPVerified: {
+    type: Boolean,
+    default: false,
+  },
 });
 
+const UserModel = mongoose.models.User || mongoose.model<IUser>('User', userSchema);
 
-export default mongoose.models.User || mongoose.model('User', userSchema)
+export default UserModel;

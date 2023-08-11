@@ -7,17 +7,17 @@ export const LOGOUT = 'LOGOUT';
 // Define action interfaces
 export interface LoginAction {
   type: typeof LOGIN;
-  payload: { token: string };
+  payload: { token: string,userId:string };
 }
 
 export interface LogoutAction {
   type: typeof LOGOUT;
 }
 
-export const login = (token: string): AuthAction => {
+export const login = (token: string,userId:string): AuthAction => {
  return {
    type: LOGIN,
-   payload: { token },
+   payload: { token,userId },
  };
 };
 

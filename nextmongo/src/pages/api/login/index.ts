@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "../../../lib/dbConnect";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import User from "../../../models/User";
+import User, { IUser } from "../../../models/User";
 
 export interface LoginRequestBody {
   email: string;
@@ -10,7 +10,8 @@ export interface LoginRequestBody {
 }
 
 export interface LoginResponseBody {
-  user: { name: string };
+  name: string;
+  userId:string;
   token: string;
 }
 
@@ -28,7 +29,7 @@ export default async function handler(
 
       // In a real application, you would fetch the user from the database based on the provided email.
       // For this example, we will use a dummy user object.
-      const user = await User.findOne({ email });
+      const user: IUser | null = await User.findOne({ email });
 
       if (!user) {
         return res.status(404).json({ error: "User not found" });
@@ -51,7 +52,7 @@ export default async function handler(
 
         res
           .status(200)
-          .json({ user: { name: user.name }, token } as LoginResponseBody);
+          .json({ name: user.name ,userId: user.id ,token } as LoginResponseBody);
       } catch (error) {
         console.error("Login error:", error);
         res.status(500).json({ error: "Internal server error" });
