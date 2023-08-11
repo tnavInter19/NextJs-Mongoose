@@ -5,12 +5,24 @@ import { useEffect } from "react";
 import { convertFileToBase64,downloadFile } from '@/utils/fileUtils';
 import { postRequest } from "@/utils/api";
 
+interface IFile {
+ fileId: number;
+ filename: string;
+ size: number;
+ contentType: string;
+ content: string;
+}
+
+interface IFileUpload {
+ files: IFile[];
+ userId: string;
+}
 const FileUploadForm: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   const authToken = useSelector((state : RootState) => state.auth.token);
   const authId = useSelector((state : RootState) => state.auth.userId);
-  const [fileUploads, setFileUploads] = useState([]);
+  const [fileUploads, setFileUploads] = useState<IFileUpload>();
 
   useEffect(() => {
     fetchData();
@@ -75,30 +87,28 @@ const FileUploadForm: React.FC = () => {
 
       <div>
       <h2>File Uploads for User {authId}</h2>
-      <ul>
-        {fileUploads.map((fileUpload) => (
-          <li key={fileUpload._id}>
-            <p>Upload Date: {new Date(fileUpload.createdAt).toLocaleString()}</p>
-            <ul>
-              {fileUpload.files.map((file, index) => (
-                <li key={index}>
-                  <p>File Name: {file.filename}</p>
-                  <p>File Size: {file.size} bytes</p>
-                  <p>Content Type: {file.contentType}</p>
-                  <img src={`${file.content}`} alt={file.filename} />
-                  <button
-                    onClick={() =>
-                      downloadFile(file.content, file.filename)
-                    }
-                  >
-                    Download File
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </li>
-        ))}
-      </ul>
+      {fileUploads && (
+        <div>
+          <ul>
+            {fileUploads?.files?.map((file: IFile, index: number) => (
+              <li key={index}>
+                <p>File Name: {file.filename}</p>
+                <p>File Size: {file.size} bytes</p>
+                <p>Content Type: {file.contentType}</p>
+                <img src={`${file.content}`} alt={file.filename} />
+                <button
+                  onClick={() =>
+                    downloadFile(file.content, file.filename)
+                  }
+                >
+                  Download File
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+      )}
     </div>
     </div>
   );

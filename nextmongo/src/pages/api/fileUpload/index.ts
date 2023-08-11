@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const fileUploads = await FileUpload.find({ userId });
+    const fileUploads = await FileUpload.findOne({ userId });
 
     res.status(200).json({ fileUploads });
   } catch (error) {
@@ -28,12 +28,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const { authId, files } = req.body;
 
+      const allowedContentTypes = ['image/jpeg', 'image/png'];
+      const maxSizeInBytes = 10 * 1024 * 1024; // 10MB
+  
+      
+      for (const file of files) {
+        if (!allowedContentTypes.includes(file.mimetype)) {
+          return res.status(400).json({ error: 'Invalid file content type' });
+        }
+  
+        if (file.size > maxSizeInBytes) {
+          return res.status(400).json({ error: 'File size exceeds the limit' });
+        }
+       }
+
       await dbConnect(); // Ensure the database connection is established
 
       const user = await User.findById(authId);
 
       if (!user) {
-        return res.status(404).json({ message: 'User not found' });
+        return res.status(404).json({ error: 'User not found' });
       }
 
       const existingFileUpload = await FileUpload.findOne({ userId: authId });
@@ -67,9 +81,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(201).json({ message: 'Files uploaded successfully' });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Error uploading files' });
+      res.status(500).json({ error: 'Error uploading files' });
     }
   } else {
-    res.status(405).json({ message: 'Method not allowed' });
+    res.status(405).json({ error: 'Method not allowed' });
   }
 }
