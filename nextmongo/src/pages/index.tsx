@@ -2,8 +2,9 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
-import { RootState } from "@/redux/store";
+
 import { useEffect } from "react";
+import { RootState } from "../redux/store";
 
 const inter = Inter({ subsets: ["latin"] });
 

@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
-import { RootState } from "@/redux/store";
+
 import { useEffect } from "react";
 import Link from "next/link";
-import { RegisterRequestBody } from "@/pages/api/register";
-import { postRequest } from "@/utils/api";
+import { RootState } from "../../../redux/store";
+import { RegisterRequestBody } from "../../api/register";
+import { postRequest } from "../../../utils/api";
+
 
 function Registartion() {
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);

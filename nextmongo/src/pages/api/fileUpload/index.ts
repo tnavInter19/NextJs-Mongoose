@@ -33,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   
       
       for (const file of files) {
-        if (!allowedContentTypes.includes(file.mimetype)) {
+        if (!allowedContentTypes.includes(file.contentType)) {
           return res.status(400).json({ error: 'Invalid file content type' });
         }
   

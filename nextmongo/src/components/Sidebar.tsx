@@ -1,7 +1,8 @@
 import { MoreVertical, ChevronLast, ChevronFirst } from "lucide-react";
 import { useContext, createContext, useState, ReactNode } from "react";
 import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
+
+import { RootState } from "../redux/store";
 import Link from "next/link";
 
 interface SidebarContextValue {

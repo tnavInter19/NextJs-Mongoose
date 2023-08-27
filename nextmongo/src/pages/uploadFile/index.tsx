@@ -1,9 +1,10 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 import { useEffect } from "react";
-import { convertFileToBase64,downloadFile } from '@/utils/fileUtils';
-import { postRequest } from "@/utils/api";
+import { RootState } from '../../redux/store';
+import { convertFileToBase64, downloadFile } from '../../utils/fileUtils';
+import { postRequest } from '../../utils/api';
+
 
 interface IFile {
  fileId: number;
@@ -67,6 +68,7 @@ const FileUploadForm: React.FC = () => {
     postRequest("/api/fileUpload", requestData, isLoggedIn, authToken!)
     .then((res) => {
      console.log('Files uploaded successfully');
+     fetchData();
     })
     .catch((error) => {
      console.log(error.message)

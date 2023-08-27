@@ -14,8 +14,8 @@ export interface RegisterRequestBody {
 const transporter = nodemailer.createTransport({
   service: "Gmail",
   auth: {
-    user: "your-email@gmail.com",
-    pass: "your-email-password",
+    user: "naveenthammisetty7@gmail.com",
+    pass: "aeroslit",
   },
 });
 
@@ -49,7 +49,7 @@ export default async function handler(
 
             // Send OTP via email
             const mailOptions = {
-              from: "your-email@gmail.com",
+              from: "naveenthammisetty7@gmail.com",
               to: existingUser.email,
               subject: "Registration OTP",
               text: `Your OTP for registration is: ${otp}`,
@@ -75,15 +75,17 @@ export default async function handler(
         const newUser = new user({
           name,
           email,
-          hashedPassword,
+          password:hashedPassword,
           otp,
           otpExpiration,
         });
+
+        console.log(newUser)
         await newUser.save();
 
         // Send OTP via email
         const mailOptions = {
-          from: "your-email@gmail.com",
+          from: "naveenthammisetty7@gmail.com",
           to: email,
           subject: "Registration OTP",
           text: `Your OTP for registration is: ${otp}`,
@@ -93,6 +95,7 @@ export default async function handler(
 
         res.status(201).json({ message: "User registered successfully" });
       } catch (error) {
+       console.log(error)
         res.status(500).json({ error: "Server error" });
       }
       break;
