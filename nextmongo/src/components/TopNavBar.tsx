@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React, { useState } from "react";
 import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
+import { RootState } from '../redux/store';
 
 const TopNavBar: React.FC = () => {
  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

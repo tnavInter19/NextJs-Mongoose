@@ -1,6 +1,7 @@
 import { ReactNode, createContext, useContext, useState } from 'react';
 import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { RootState } from '../redux/store';
+
 
 // Define the type for the AuthContext
 type AuthContextType = {
