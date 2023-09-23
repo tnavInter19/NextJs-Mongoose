@@ -1,11 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "../../../lib/dbConnect";
 import Job from "../../../models/Job";
+import { protectAPI } from "@/middelware/authMiddleware";
 
-export default async function handler(
+const handler = async (
   req: NextApiRequest,
   res: NextApiResponse
-): Promise<void> {
+): Promise<void> => {
   const {
     query: { id },
     method,
@@ -57,4 +58,5 @@ export default async function handler(
       res.status(400).json({ success: false });
       break;
   }
-}
+};
+export default protectAPI(handler);
