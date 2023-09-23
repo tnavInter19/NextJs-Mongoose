@@ -75,12 +75,12 @@ export default async function handler(
         const newUser = new user({
           name,
           email,
-          password:hashedPassword,
+          password: hashedPassword,
           otp,
           otpExpiration,
         });
 
-        console.log(newUser)
+        console.log(newUser);
         await newUser.save();
 
         // Send OTP via email
@@ -95,7 +95,7 @@ export default async function handler(
 
         res.status(201).json({ message: "User registered successfully" });
       } catch (error) {
-       console.log(error)
+        console.log(error);
         res.status(500).json({ error: "Server error" });
       }
       break;

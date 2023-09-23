@@ -1,4 +1,3 @@
-
 const handleApiResponse = async (response: Response) => {
   if (!response.ok) {
     const data = await response.json();
@@ -8,21 +7,21 @@ const handleApiResponse = async (response: Response) => {
 };
 
 const defaultHeaders = {
-  'Content-Type': 'application/json',
+  "Content-Type": "application/json",
 };
 
-const createHeaders = (isLoggedIn: boolean, authToken?: string) => {
+const createHeaders = (authToken: string) => {
   const headers: any = { ...defaultHeaders };
-  if (isLoggedIn) {
-    headers.Authorization = authToken;
-  }
+
+  headers.Authorization = authToken;
+
   return headers;
 };
 
-export const getRequest = async (url: string, isLoggedIn: boolean, authToken?: string) => {
+export const getRequest = async (url: string,) => {
   const response = await fetch(url, {
-    method: 'GET',
-    headers: createHeaders(isLoggedIn, authToken),
+    method: "GET",
+    headers: createHeaders(process.env.Auth_Token as string),
   });
 
   return handleApiResponse(response);
@@ -31,12 +30,10 @@ export const getRequest = async (url: string, isLoggedIn: boolean, authToken?: s
 export const postRequest = async (
   url: string,
   data: any,
-  isLoggedIn: boolean,
-  authToken?: string
 ) => {
   const response = await fetch(url, {
-    method: 'POST',
-    headers: createHeaders(isLoggedIn, authToken),
+    method: "POST",
+    headers: createHeaders(process.env.Auth_Token as string),
     body: JSON.stringify(data),
   });
 
@@ -46,22 +43,20 @@ export const postRequest = async (
 export const putRequest = async (
   url: string,
   data: any,
-  isLoggedIn: boolean,
-  authToken?: string
 ) => {
   const response = await fetch(url, {
-    method: 'PUT',
-    headers: createHeaders(isLoggedIn, authToken),
+    method: "PUT",
+    headers: createHeaders(process.env.Auth_Token as string),
     body: JSON.stringify(data),
   });
 
   return handleApiResponse(response);
 };
 
-export const deleteRequest = async (url: string, isLoggedIn: boolean, authToken?: string) => {
+export const deleteRequest = async (url: string,) => {
   const response = await fetch(url, {
-    method: 'DELETE',
-    headers: createHeaders(isLoggedIn, authToken),
+    method: "DELETE",
+    headers: createHeaders(process.env.Auth_Token as string),
   });
 
   return handleApiResponse(response);

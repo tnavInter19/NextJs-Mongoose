@@ -28,9 +28,7 @@ const JobsPage: React.FC<Props> = ({ initialJobs }) => {
 
   const deleteJob = async (jobId: string) => {
     const response = await deleteRequest(
-      `/api/jobs/${jobId}`,
-      isLoggedIn,
-      authToken!
+      `/api/jobs/${jobId}`
     );
     if (response.error) {
       setError("Error deleting job: " + response.error);
@@ -41,7 +39,7 @@ const JobsPage: React.FC<Props> = ({ initialJobs }) => {
   };
 
   const createJob = async (newJob: Job) => {
-    postRequest("/api/jobs", newJob, isLoggedIn, authToken!)
+    postRequest("/api/jobs", newJob)
       .then((res) => {
         console.log("Response Data:", res);
       })
@@ -53,9 +51,7 @@ const JobsPage: React.FC<Props> = ({ initialJobs }) => {
   const editJob = async (editedJob: Job) => {
     const response = await putRequest(
       `/api/jobs/${editedJob._id}`,
-      editedJob,
-      isLoggedIn,
-      authToken!
+      editedJob
     );
     if (response.error) {
       setError("Error editing job: " + response.error);

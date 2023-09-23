@@ -8,7 +8,6 @@ import { RootState } from "../../../redux/store";
 import { RegisterRequestBody } from "../../api/register";
 import { postRequest } from "../../../utils/api";
 
-
 function Registartion() {
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   const authToken = useSelector((state: RootState) => state.auth.token);
@@ -140,7 +139,7 @@ function Registartion() {
       email: email,
       password: password,
     };
-    postRequest("/api/register", data, isLoggedIn, authToken!)
+    postRequest("/api/register", data)
       .then(() => {
         console.log("User registered successfully!");
       })
