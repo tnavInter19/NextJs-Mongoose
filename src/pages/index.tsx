@@ -19,7 +19,7 @@ export default function Home() {
     }
    }
    init();
-  }, []);
+  }, [isLoggedIn,router]);
   // Check if the user is logged in and redirect accordingly
 
   return (

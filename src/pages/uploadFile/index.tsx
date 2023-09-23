@@ -1,43 +1,43 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, { useState, ChangeEvent, FormEvent, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
-import { RootState } from '../../redux/store';
-import { convertFileToBase64, downloadFile } from '../../utils/fileUtils';
-import { postRequest } from '../../utils/api';
-
+import { RootState } from "../../redux/store";
+import { convertFileToBase64, downloadFile } from "../../utils/fileUtils";
+import { postRequest } from "../../utils/api";
+import Image from "next/image";
 
 interface IFile {
- fileId: number;
- filename: string;
- size: number;
- contentType: string;
- content: string;
+  fileId: number;
+  filename: string;
+  size: number;
+  contentType: string;
+  content: string;
 }
 
 interface IFileUpload {
- files: IFile[];
- userId: string;
+  files: IFile[];
+  userId: string;
 }
 const FileUploadForm: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
-  const authToken = useSelector((state : RootState) => state.auth.token);
-  const authId = useSelector((state : RootState) => state.auth.userId);
+  const authToken = useSelector((state: RootState) => state.auth.token);
+  const authId = useSelector((state: RootState) => state.auth.userId);
   const [fileUploads, setFileUploads] = useState<IFileUpload>();
+  const fetchData = useCallback(async () => {
+   try {
+     const response = await fetch(`/api/fileUpload?userId=${authId}`);
+     const data = await response.json();
+     setFileUploads(data.fileUploads);
+   } catch (error) {
+     console.error('Error fetching file uploads:', error);
+   }
+ }, [authId]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
-  const fetchData = async () => {
-    try {
-      const response = await fetch(`/api/fileUpload?userId=${authId}`);
-      const data = await response.json();
-      setFileUploads(data.fileUploads);
-    } catch (error) {
-      console.error('Error fetching file uploads:', error);
-    }
-  };
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const selectedFiles = Array.from(e.target.files);
@@ -65,19 +65,15 @@ const FileUploadForm: React.FC = () => {
       files: fileData,
     };
 
-    postRequest("/api/fileUpload", requestData, isLoggedIn, authToken!)
-    .then((res) => {
-     console.log('Files uploaded successfully');
-     fetchData();
-    })
-    .catch((error) => {
-     console.log(error.message)
-    });
-
-
+    postRequest("/api/fileUpload", requestData)
+      .then((res) => {
+        console.log("Files uploaded successfully");
+        fetchData();
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
   };
-
-
 
   return (
     <div>
@@ -88,30 +84,32 @@ const FileUploadForm: React.FC = () => {
       </form>
 
       <div>
-      <h2>File Uploads for User {authId}</h2>
-      {fileUploads && (
-        <div>
-          <ul>
-            {fileUploads?.files?.map((file: IFile, index: number) => (
-              <li key={index}>
-                <p>File Name: {file.filename}</p>
-                <p>File Size: {file.size} bytes</p>
-                <p>Content Type: {file.contentType}</p>
-                <img src={`${file.content}`} alt={file.filename} />
-                <button
-                  onClick={() =>
-                    downloadFile(file.content, file.filename)
-                  }
-                >
-                  Download File
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-      )}
-    </div>
+        <h2>File Uploads for User {authId}</h2>
+        {fileUploads && (
+          <div>
+            <ul>
+              {fileUploads?.files?.map((file: IFile, index: number) => (
+                <li key={index}>
+                  <p>File Name: {file.filename}</p>
+                  <p>File Size: {file.size} bytes</p>
+                  <p>Content Type: {file.contentType}</p>
+                  <Image
+                    src={`${file.content}`}
+                    alt={file.filename}
+                    width={500} // Set the width of the image
+                    height={500} // Set the height of the image
+                  />
+                  <button
+                    onClick={() => downloadFile(file.content, file.filename)}
+                  >
+                    Download File
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -17,7 +17,7 @@ function Registartion() {
       // Redirect to the login page or an "unauthorized" page
       router.push("/dashboard");
     }
-  }, []);
+  }, [isLoggedIn,router]);
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");

@@ -14,7 +14,7 @@ const withAuth = <Props extends {}>(
       if (!isAuthenticated) {
         router.push("/auth/login");
       }
-    }, [isAuthenticated]);
+    }, [isAuthenticated,router]);
 
     if (!isAuthenticated) {
       return <Loading />;
