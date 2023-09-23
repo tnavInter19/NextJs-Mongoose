@@ -141,7 +141,7 @@ function Registartion() {
     };
     postRequest("/api/register", data)
       .then(() => {
-        console.log("User registered successfully!");
+       
       })
       .catch((error) => {
         setMessage(error.message);

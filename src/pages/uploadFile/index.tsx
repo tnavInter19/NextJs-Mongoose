@@ -67,11 +67,11 @@ const FileUploadForm: React.FC = () => {
 
     postRequest("/api/fileUpload", requestData)
       .then((res) => {
-        console.log("Files uploaded successfully");
+       
         fetchData();
       })
       .catch((error) => {
-        console.log(error.message);
+        
       });
   };
 

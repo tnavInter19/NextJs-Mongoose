@@ -80,7 +80,6 @@ export default async function handler(
           otpExpiration,
         });
 
-        console.log(newUser);
         await newUser.save();
 
         // Send OTP via email
@@ -95,7 +94,6 @@ export default async function handler(
 
         res.status(201).json({ message: "User registered successfully" });
       } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server error" });
       }
       break;

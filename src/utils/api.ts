@@ -12,7 +12,6 @@ const defaultHeaders = {
 
 const createHeaders = (authToken: string) => {
   const headers: any = { ...defaultHeaders };
-
   headers.Authorization = authToken;
 
   return headers;
@@ -33,7 +32,7 @@ export const postRequest = async (
 ) => {
   const response = await fetch(url, {
     method: "POST",
-    headers: createHeaders(process.env.Auth_Token as string),
+    headers: createHeaders(process.env.NEXT_PUBLIC_Auth_Token as string),
     body: JSON.stringify(data),
   });
 

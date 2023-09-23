@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 function LoginPage() {
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
-  const authToken = useSelector((state: RootState) => state.auth.token);
   const router = useRouter();
   useEffect(() => {
     if (isLoggedIn) {
@@ -30,17 +29,16 @@ function LoginPage() {
       email: email,
       password: password,
     };
-
     postRequest("/api/login", req)
       .then((res: LoginResponseBody) => {
-        console.log("Response Data:", res);
+     
 
         const { token, userId } = res; // Assuming the response includes userId
         dispatch(login(token, userId)); // Dispatch both token and userId
         router.push("/dashboard");
       })
       .catch((error) => {
-        console.log(error.message);
+     
         setMessage(error.message);
       });
   };
@@ -48,7 +46,7 @@ function LoginPage() {
     <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <Image
-         className="mx-auto h-10 w-auto"
+          className="mx-auto h-10 w-auto"
           src="/mark.svg"
           alt="Your Company"
           width={40} // Set the width of the image

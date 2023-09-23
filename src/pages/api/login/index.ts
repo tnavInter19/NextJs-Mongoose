@@ -1,8 +1,10 @@
-import { NextApiRequest, NextApiResponse } from "next";
+// api/auth/login.ts
+import { NextApiRequest, NextApiResponse } from "next"; // Import the authentication middleware
 import dbConnect from "../../../lib/dbConnect";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User, { IUser } from "../../../models/User";
+import { protectAPI } from "@/middelware/authMiddleware";
 
 export interface LoginRequestBody {
   email: string;
@@ -11,14 +13,14 @@ export interface LoginRequestBody {
 
 export interface LoginResponseBody {
   name: string;
-  userId:string;
+  userId: string;
   token: string;
 }
 
-export default async function handler(
+const handler = async (
   req: NextApiRequest,
   res: NextApiResponse
-): Promise<void> {
+): Promise<void> => {
   const { method } = req;
 
   await dbConnect();
@@ -52,7 +54,7 @@ export default async function handler(
 
         res
           .status(200)
-          .json({ name: user.name ,userId: user.id ,token } as LoginResponseBody);
+          .json({ name: user.name, userId: user.id, token } as LoginResponseBody);
       } catch (error) {
         console.error("Login error:", error);
         res.status(500).json({ error: "Internal server error" });
@@ -62,4 +64,6 @@ export default async function handler(
       res.status(400).json({ success: false });
       break;
   }
-}
+};
+
+export default protectAPI(handler); // Wrap the API handler with the protectAPI middleware

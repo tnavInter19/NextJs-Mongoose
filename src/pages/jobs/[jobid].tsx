@@ -18,7 +18,7 @@ interface Props {
 }
 
 const JobsPage: React.FC<Props> = ({ initialJobs }) => {
-  console.log(initialJobs);
+
   const router = useRouter();
   const [jobs, setJobs] = useState<Job[]>(initialJobs);
   const [error, setError] = useState<string>("");
@@ -41,10 +41,10 @@ const JobsPage: React.FC<Props> = ({ initialJobs }) => {
   const createJob = async (newJob: Job) => {
     postRequest("/api/jobs", newJob)
       .then((res) => {
-        console.log("Response Data:", res);
+    
       })
       .catch((error) => {
-        console.log(error.message);
+      
       });
   };
 
@@ -121,7 +121,7 @@ export async function getServerSideProps({
 }: {
   params: { jobid: string }; // Define the type for params
 }) {
-  console.log(params.jobid);
+
   try {
     await dbConnect();
     /* find all the data in our database */

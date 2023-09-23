@@ -28,12 +28,12 @@ export default function Upload() {
       });
 
       if (response.ok) {
-        console.log('File uploaded successfully');
+      
       } else {
-        console.error('File upload failed');
+       
       }
     } catch (error) {
-      console.error('Error uploading file:', error);
+     
     }
   };
 
