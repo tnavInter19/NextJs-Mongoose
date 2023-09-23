@@ -1,13 +1,12 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import Job from "@/models/Job";
 import dbConnect from "@/lib/dbConnect";
+import { protectAPI } from "@/middelware/authMiddleware";
+import Job from "@/models/Job";
+import { NextApiRequest, NextApiResponse } from "next";
 
-
-export default async function handler(
+const handler = async (
   req: NextApiRequest,
   res: NextApiResponse
-): Promise<void> {
-
+): Promise<void> => {
   const { method } = req;
 
   await dbConnect();
@@ -23,11 +22,10 @@ export default async function handler(
       break;
     case "POST":
       try {
-
-       const { company, position,status,createdBy } = req.body
-       if(!createdBy){
-        return res.status(404).json({ error: "Please provide user" });
-       }
+        const { company, position, status, createdBy } = req.body;
+        if (!createdBy) {
+          return res.status(404).json({ error: "Please provide user" });
+        }
         const job = await Job.create(
           req.body
         ); /* create a new model in the database */
@@ -40,4 +38,6 @@ export default async function handler(
       res.status(400).json({ success: false });
       break;
   }
-}
+};
+
+export default protectAPI(handler);
