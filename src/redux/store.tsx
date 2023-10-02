@@ -1,5 +1,4 @@
-// src/redux/store.ts
-import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
+import { configureStore, Middleware } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { combineReducers } from "redux";
 import { persistReducer, persistStore } from "redux-persist";
@@ -20,20 +19,16 @@ export interface RootState {
   auth: AuthState;
 }
 
-// Middleware configuration, including Redux Thunk and Redux Persist
-const middleware = [
-  ...getDefaultMiddleware({
-    serializableCheck: false, // Disable serializableCheck for Redux Persist
-  }),
+// Custom middleware, including Redux Thunk
+const middleware: Middleware[] = [
   thunkMiddleware,
+  // Add other middleware here as needed
 ];
 
-// Redux DevTools Extension setup
 const devTools =
-  (process.browser &&
-    (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
-    (window as any).__REDUX_DEVTOOLS_EXTENSION__()) ||
-  null;
+  typeof window !== "undefined" &&
+  (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
+  (window as any).__REDUX_DEVTOOLS_EXTENSION__();
 
 // Persist configuration
 const persistConfig = {

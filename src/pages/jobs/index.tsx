@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { deleteRequest, postRequest, putRequest } from "@/utils/api";
+import { deleteRequest, getRequest, postRequest, putRequest } from "@/utils/api";
 import Loading from "@/components/loading";
 import dbConnect from "@/lib/dbConnect";
 import Job from "@/models/Job";
@@ -9,6 +9,7 @@ import withAuth from "./../../utils/withAuth";
 
 export interface Job {
   _id?: string;
+  createdBy?:string;
   company: string;
   position: string;
   status: "interview" | "declined" | "pending";
@@ -22,23 +23,27 @@ const JobsPage: React.FC<Props> = ({ initialJobs }) => {
   const [jobs, setJobs] = useState<Job[]>(initialJobs);
   const [error, setError] = useState<string>("");
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
-  const authToken = useSelector((state: RootState) => state.auth.token);
+  const userId = useSelector((state: RootState) => state.auth.userId);
   const dispatch = useDispatch();
 
   const deleteJob = async (jobId: string) => {
     const response = await deleteRequest(`/api/jobs/${jobId}`);
+
     if (response.error) {
       setError("Error deleting job: " + response.error);
     } else {
-      // Remove the deleted job from the state
-      setJobs(jobs.filter((job) => job._id !== jobId));
+     getRequest("/api/jobs").then((response)=>{
+      setJobs(response.data);
+     })
     }
   };
 
   const createJob = async (newJob: Job) => {
     postRequest("/api/jobs", newJob)
       .then((res) => {
-      
+      getRequest("/api/jobs").then((response)=>{
+       setJobs(response.data);
+      })
       })
       .catch((error) => {
        
@@ -85,6 +90,7 @@ const JobsPage: React.FC<Props> = ({ initialJobs }) => {
             e.preventDefault();
             const formData = new FormData(e.target as HTMLFormElement);
             const newJob: Job = {
+             createdBy:userId as string,
               company: formData.get("company") as string,
               position: formData.get("position") as string,
               status: formData.get("status") as

@@ -8,6 +8,7 @@ import Job from "@/models/Job";
 
 export interface Job {
   _id?: string;
+  createdBy?:string;
   company: string;
   position: string;
   status: "interview" | "declined" | "pending";
@@ -22,10 +23,6 @@ const JobsPage: React.FC<Props> = ({ initialJobs }) => {
   const router = useRouter();
   const [jobs, setJobs] = useState<Job[]>(initialJobs);
   const [error, setError] = useState<string>("");
-  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
-  const authToken = useSelector((state: RootState) => state.auth.token);
-  const dispatch = useDispatch();
-
   const deleteJob = async (jobId: string) => {
     const response = await deleteRequest(
       `/api/jobs/${jobId}`
@@ -73,6 +70,7 @@ const JobsPage: React.FC<Props> = ({ initialJobs }) => {
       ) : (
         <ul className="space-y-4">
           <p>Post: {router.query.jobid}</p>
+
           {jobs.map((job) => (
             <li key={job._id} className="p-4 bg-white shadow-md rounded-lg">
               <h3 className="text-xl font-semibold mb-2">{job.company}</h3>
