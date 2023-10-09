@@ -1,13 +1,13 @@
 import dbConnect from "@/lib/dbConnect";
 import Job from "@/models/Job";
-import { putRequest } from "@/utils/api";
+import { RootState } from "@/redux/store";
+import { postRequest } from "@/utils/api";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 
 export interface Job {
- _id?: string;
+  _id?: string;
   createdBy?: string;
   company: string;
   position: string;
@@ -15,32 +15,39 @@ export interface Job {
 }
 
 interface Props {
-  initialJobs: Job;
+  initialJobs: Job[];
 }
 
-const JobsPage: React.FC<Props> = ({ initialJobs }) => {
+const JobsPage: React.FC<Props> = () => {
   const router = useRouter();
   const userId = useSelector((state: RootState) => state.auth.userId);
+
+  const [newJob, setNewJob] = useState<Job>({
+    createdBy: userId as string,
+    company: "",
+    position: "",
+    status: "pending",
+  });
+
   const [error, setError] = useState<string>("");
-  const [newJob, setNewJob] = useState<Job>(
-    initialJobs
-  );
-  const editJob = async (e: React.FormEvent<HTMLFormElement>) => {
+
+  const createJob = async (e: React.FormEvent<HTMLFormElement>) => {
    e.preventDefault();
-    const response = await putRequest(`/api/jobs/${initialJobs._id}`, newJob);
-    if (response.error) {
-      setError("Error editing job: " + response.error);
-    } else {
-     router.push(`/jobs`);
-    }
+   
+    postRequest("/api/jobs", newJob)
+      .then((res) => {
+        router.push(`/jobs`);
+      })
+      .catch((error) => {});
   };
 
   return (
     <div className="p-4">
       <h1 className="text-3xl font-bold mb-4">Job Listings</h1>
       <div>
-        <h2>Edit Job</h2>
-        <form onSubmit={editJob}>
+        {/* Form to create a new job */}
+        <h2>Create New Job</h2>
+        <form onSubmit={createJob}>
           <input
             type="text"
             name="company"
@@ -72,32 +79,11 @@ const JobsPage: React.FC<Props> = ({ initialJobs }) => {
             <option value="declined">Declined</option>
             <option value="pending">Pending</option>
           </select>
-          <button type="submit">Edit Job</button>
+          <button type="submit">New Job</button>
         </form>
       </div>
     </div>
   );
 };
-
-export async function getServerSideProps({
-  params,
-}: {
-  params: { jobid: string }; // Define the type for params
-}) {
-  try {
-    await dbConnect();
-    /* find all the data in our database */
-    const result = await Job.findById(params.jobid);
-
-    return {
-      props: { initialJobs: JSON.parse(JSON.stringify(result)) },
-    };
-  } catch (error) {
-
-    return {
-      props: { initialJobs: null },
-    };
-  }
-}
 
 export default JobsPage;

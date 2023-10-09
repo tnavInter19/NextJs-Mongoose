@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import { deleteRequest, getRequest, postRequest, putRequest } from "@/utils/api";
-import Loading from "@/components/loading";
 import dbConnect from "@/lib/dbConnect";
 import Job from "@/models/Job";
+import { RootState } from "@/redux/store";
+import { deleteRequest, getRequest, postRequest } from "@/utils/api";
+import { useRouter } from 'next/router';
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import withAuth from "./../../utils/withAuth";
 
 export interface Job {
@@ -25,6 +25,8 @@ const JobsPage: React.FC<Props> = ({ initialJobs }) => {
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   const userId = useSelector((state: RootState) => state.auth.userId);
   const dispatch = useDispatch();
+  const router = useRouter();
+
 
   const deleteJob = async (jobId: string) => {
     const response = await deleteRequest(`/api/jobs/${jobId}`);
@@ -51,20 +53,23 @@ const JobsPage: React.FC<Props> = ({ initialJobs }) => {
   };
 
   const editJob = async (editedJob: Job) => {
-    const response = await putRequest(`/api/jobs/${editedJob._id}`, editedJob);
-    if (response.error) {
-      setError("Error editing job: " + response.error);
-    } else {
-      // Update the job in the state
-      setJobs(
-        jobs.map((job) => (job._id === editedJob._id ? response.data : job))
-      );
-    }
+   router.push(`/jobs/${editedJob._id}`);
   };
 
   return (
     <div className="p-4">
-      <h1 className="text-3xl font-bold mb-4">Job Listings</h1>
+  <h1 className="text-2xl lg:text-4xl md:text-3xl font-bold mb-4 flex items-center">
+  Job Listings
+  <span
+    onClick={() => {
+      // Handle the click event
+      router.push('/jobs/new');
+    }}
+    className="ml-auto inline-block rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm cursor-pointer hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+  >
+    New Jobs
+  </span>
+</h1>
       {jobs.length === 0 ? (
         <div>
           <p>Job Not Found</p>
@@ -82,35 +87,6 @@ const JobsPage: React.FC<Props> = ({ initialJobs }) => {
           ))}
         </ul>
       )}
-      <div>
-        {/* Form to create a new job */}
-        <h2>Create New Job</h2>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target as HTMLFormElement);
-            const newJob: Job = {
-             createdBy:userId as string,
-              company: formData.get("company") as string,
-              position: formData.get("position") as string,
-              status: formData.get("status") as
-                | "interview"
-                | "declined"
-                | "pending",
-            };
-            createJob(newJob);
-          }}
-        >
-          <input type="text" name="company" placeholder="Company" required />
-          <input type="text" name="position" placeholder="Position" required />
-          <select name="status" required>
-            <option value="interview">Interview</option>
-            <option value="declined">Declined</option>
-            <option value="pending">Pending</option>
-          </select>
-          <button type="submit">Create Job</button>
-        </form>
-      </div>
     </div>
   );
 };
@@ -125,7 +101,7 @@ export async function getServerSideProps() {
       props: { initialJobs: JSON.parse(JSON.stringify(result)) },
     };
   } catch (error) {
-    console.error(error);
+
     return {
       props: { initialJobs: [] },
     };
