@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
-
+import Image from "next/image";
 import { useEffect } from "react";
 import Link from "next/link";
 import { RootState } from "../../../redux/store";
@@ -148,96 +148,96 @@ function Registartion() {
       });
   };
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="p-6 bg-white rounded-md shadow-lg w-96">
-        <h1 className="text-3xl font-semibold mb-4 ">Register</h1>
-        <form className="space-y-4" onSubmit={handleFormSubmit}>
-          <div className="mb-4">
-            <label
-              htmlFor="username"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Username:
-            </label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              value={username}
-              onChange={handleInputChange}
-              onBlur={handleBlur}
-              className={`mt-1 px-4 py-2 w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 ${
-                errors["username"] ? "border-red-500" : ""
-              }`}
-            />
-            {errors["username"] && (
-              <p className="text-red-500 text-sm">{errors["username"]}</p>
-            )}
-          </div>
-          <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Email:
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={email}
-              onChange={handleInputChange}
-              onBlur={handleBlur}
-              className={`mt-1 px-4 py-2 w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 ${
-                errors["email"] ? "border-red-500" : ""
-              }`}
-            />
-            {errors["email"] && (
-              <p className="text-red-500 text-sm">{errors["email"]}</p>
-            )}
-          </div>
-          <div className="mb-4">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Password:
-            </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={password}
-              onChange={handleInputChange}
-              onBlur={handleBlur}
-              className={`mt-1 px-4 py-2 w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 ${
-                errors["password"] ? "border-red-500" : ""
-              }`}
-            />
-            {errors["password"] && (
-              <p className="text-red-500 text-sm">{errors["password"]}</p>
-            )}
-          </div>
-          <div>
-            <button
-              type="submit"
-              className="w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none"
-            >
-              Register
-            </button>
-            <p className="text-sm font-light text-gray-500 dark:text-gray-400 mt-3">
-              Already have an account{" "}
-              <Link
-                href="/auth/login"
-                className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-              >
-                Login
-              </Link>
-            </p>
-          </div>
+   <div className="flex min-h-screen flex-1 flex-col justify-center py-15 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md ">
+        <Image
+          className="mx-auto h-10 w-auto"
+          src="/mark.svg"
+          alt="Your Company"
+          width={40} // Set the width of the image
+          height={40} // Set the height of the image
+        />
+        <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          Sign up to your account
+        </h2>
+      </div>
 
-          {message && <p className="text-center mt-4">{message}</p>}
-        </form>
+      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
+        <div className="bg-white px-6 py-12 sm:rounded-lg sm:px-12">
+          <form className="space-y-6" onSubmit={handleFormSubmit}>
+       
+          <div className="mt-2">
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+               Username
+              </label>
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  autoComplete="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>  
+            
+              <div className="mt-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Email address
+              </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
+       
+
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Password
+              </label>
+              <div className="mt-2">
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="current-password"
+                  required
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
+            </div>
+
+
+
+            <div>
+              <button
+                type="submit"
+                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                Sign up
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

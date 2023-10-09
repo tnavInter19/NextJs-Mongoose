@@ -6,7 +6,7 @@ import user from "../../../models/User";
 import bcrypt from "bcryptjs";
 
 export interface RegisterRequestBody {
-  name: string;
+  name?: string;
   email: string;
   password: string;
 }
